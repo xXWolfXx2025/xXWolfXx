@@ -2,109 +2,24 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Login - xXWOLFXx</title>
   <link rel="stylesheet" href="style.css" />
-  <style>
-    body {
-      background-color: #0f0f0f;
-      color: white;
-      font-family: 'Segoe UI', sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-
-    .login-container {
-      background: rgba(255, 255, 255, 0.05);
-      padding: 40px;
-      border-radius: 10px;
-      box-shadow: 0 0 20px #ff0057;
-      text-align: center;
-      width: 90%;
-      max-width: 400px;
-    }
-
-    .login-container h1 {
-      margin-bottom: 20px;
-      font-size: 2rem;
-    }
-
-    .login-container input {
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      border: none;
-      border-radius: 5px;
-      font-size: 1rem;
-    }
-
-    .login-container button {
-      width: 100%;
-      padding: 12px;
-      margin-top: 10px;
-      font-size: 1rem;
-      background-color: #ff0057;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    .login-container button:hover {
-      background-color: #e6004c;
-    }
-
-    .divider {
-      margin: 20px 0;
-      color: #888;
-    }
-  </style>
 </head>
-<body>
-  <div class="login-container">
-    <h1>Login to xXWOLFXx</h1>
-
-    <!-- Email Login -->
-    <input type="email" id="email" placeholder="Email" required />
-    <input type="password" id="password" placeholder="Password" required />
-    <button onclick="emailLogin()">Login with Email</button>
-
-    <div class="divider">OR</div>
-
-    <!-- Google Login -->
-    <button onclick="googleLogin()">Login with Google</button>
+<body class="auth-page">
+  <div class="form-container">
+    <h2>Login to xXWOLFXx</h2>
+    <input type="email" placeholder="Email" />
+    <input type="password" placeholder="Password" />
+    <button onclick="loginUser()">Login</button>
+    <p class="redirect">Don't have an account? <a href="#">Sign up</a></p>
   </div>
 
-  <script type="module">
-    // OPTIONAL: Paste your Firebase setup here (if using Firebase)
-    // import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    // import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-
-    // const firebaseConfig = {
-    //   apiKey: "...",
-    //   authDomain: "...",
-    //   projectId: "...",
-    //   storageBucket: "...",
-    //   messagingSenderId: "...",
-    //   appId: "..."
-    // };
-
-    // const app = initializeApp(firebaseConfig);
-    // const auth = getAuth(app);
-    // const provider = new GoogleAuthProvider();
-
-    window.emailLogin = () => {
-      alert("Email login clicked. Integrate Firebase or custom backend here.");
-      // Example: signInWithEmailAndPassword(auth, email, password)...
-    };
-
-    window.googleLogin = () => {
-      alert("Google login clicked. Integrate Firebase or custom backend here.");
-      // Example: signInWithPopup(auth, provider)...
-    };
+  <script>
+    function loginUser() {
+      alert("This is a demo. Login feature coming soon.");
+      window.location.href = "explore.html";
+    }
   </script>
 </body>
 </html>
