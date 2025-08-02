@@ -6,7 +6,7 @@
   <title>Explore - xXWOLFXx</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-<body style="padding: 20px;">
+<body style="padding: 20px; background-color: #121212; color: #fff; font-family: sans-serif;">
 
   <h1>🔥 Explore <span style="color: #ff0057;">xXWOLFXx</span> Creations</h1>
 
@@ -14,41 +14,9 @@
 
   <script src="firebase.js"></script>
   <script>
-  function likePost(postId) {
-    const user = firebase.auth().currentUser;
-    if (!user) {
-      alert("Login required to like posts.");
-      return;
-    }
-
-    const docRef = firebase.firestore().collection("uploads").doc(postId);
-
-    docRef.get().then(doc => {
-      if (doc.exists) {
-        const data = doc.data();
-        const likedBy = data.likedBy || [];
-
-        if (likedBy.includes(user.uid)) {
-          alert("You already liked this post.");
-        } else {
-          docRef.update({
-            likes: (data.likes || 0) + 1,
-            likedBy: [...likedBy, user.uid]
-          });
-        }
-      }
-    });
-  }
-
-  firebase.auth().onAuthStateChanged(user => {
-    if (!user) {
-      firebase.auth().signInAnonymously(); // fallback for guests
-    }
-  });
-</script>
-  <script>
     const contentFeed = document.getElementById('contentFeed');
 
+    // Load content from Firestore
     firebase.firestore().collection("uploads").orderBy("createdAt", "desc").onSnapshot(snapshot => {
       contentFeed.innerHTML = "";
       snapshot.forEach(doc => {
@@ -62,20 +30,63 @@
         card.style.boxShadow = "0 0 10px #ff0057";
 
         card.innerHTML = `
-  <h3 style="color: #ff0057;">${data.title}</h3>
-  ${fileType === "video" ? `
-    <video src="${data.url}" controls style="width: 100%; border-radius: 5px;"></video>
-  ` : `
-    <img src="${data.url}" alt="${data.title}" style="width: 100%; border-radius: 5px;" />
-  `}
-  <p style="margin: 10px 0;">${data.description || "No description"}</p>
-  <small style="color: #aaa;">Posted by: ${data.user}</small>
-  <br/><br/>
-  <button onclick="likePost('${doc.id}')" style="margin-top: 10px;">❤️ Like (${data.likes || 0})</button>
-`;
-
+          <h3 style="color: #ff0057;">${data.title}</h3>
+          ${fileType === "video" ? `
+            <video src="${data.url}" controls style="width: 100%; border-radius: 5px;"></video>
+          ` : `
+            <img src="${data.url}" alt="${data.title}" style="width: 100%; border-radius: 5px;" />
+          `}
+          <p style="margin: 10px 0;">${data.description || "No description"}</p>
+          <small style="color: #aaa;">Posted by: ${data.user}</small>
+          <br />
+          <button onclick="likePost('${doc.id}')">❤️ Like</button>
+          <span id="likes-${doc.id}" style="margin-left: 10px;">${data.likes || 0} likes</span>
+        `;
         contentFeed.appendChild(card);
       });
+    });
+
+    // Like button logic
+    function likePost(postId) {
+      const user = firebase.auth().currentUser;
+      if (!user) {
+        alert("Login required to like posts.");
+        return;
+      }
+
+      const docRef = firebase.firestore().collection("uploads").doc(postId);
+
+      docRef.get().then(doc => {
+        if (doc.exists) {
+          const data = doc.data();
+          const likedBy = data.likedBy || [];
+
+          if (likedBy.includes(user.uid)) {
+            alert("You already liked this post.");
+          } else {
+            docRef.update({
+              likes: (data.likes || 0) + 1,
+              likedBy: [...likedBy, user.uid]
+            });
+
+            // Update UI instantly
+            const likeSpan = document.getElementById("likes-" + postId);
+            if (likeSpan) {
+              const currentLikes = parseInt(likeSpan.innerText) || 0;
+              likeSpan.innerText = `${currentLikes + 1} likes`;
+            }
+          }
+        }
+      }).catch(err => {
+        console.error("Error liking post:", err);
+      });
+    }
+
+    // Anonymous fallback
+    firebase.auth().onAuthStateChanged(user => {
+      if (!user) {
+        firebase.auth().signInAnonymously().catch(console.error);
+      }
     });
   </script>
 </body>
