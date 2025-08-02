@@ -16,43 +16,50 @@
   <script>
     const contentFeed = document.getElementById('contentFeed');
 
-    // Load content from Firestore
-    firebase.firestore().collection("uploads").orderBy("createdAt", "desc").onSnapshot(snapshot => {
-      contentFeed.innerHTML = "";
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        const fileType = data.url.includes(".mp4") ? "video" : "image";
-
-        const card = document.createElement("div");
-        card.style.background = "#1e1e1e";
-        card.style.padding = "15px";
-        card.style.borderRadius = "10px";
-        card.style.boxShadow = "0 0 10px #ff0057";
-
-        card.innerHTML = `
-          <h3 style="color: #ff0057;">${data.title}</h3>
-          ${fileType === "video" ? `
-            <video src="${data.url}" controls style="width: 100%; border-radius: 5px;"></video>
-          ` : `
-            <img src="${data.url}" alt="${data.title}" style="width: 100%; border-radius: 5px;" />
-          `}
-          <p style="margin: 10px 0;">${data.description || "No description"}</p>
-          <small style="color: #aaa;">Posted by: ${data.user}</small>
-          <br />
-          <button onclick="likePost('${doc.id}')">❤️ Like</button>
-          <span id="likes-${doc.id}" style="margin-left: 10px;">${data.likes || 0} likes</span>
-        `;
-        contentFeed.appendChild(card);
-      });
+    firebase.auth().onAuthStateChanged(user => {
+      if (!user) {
+        firebase.auth().signInAnonymously().catch(console.error);
+      } else {
+        loadContent(user);
+      }
     });
 
-    // Like button logic
+    function loadContent(currentUser) {
+      firebase.firestore().collection("uploads").orderBy("createdAt", "desc").onSnapshot(snapshot => {
+        contentFeed.innerHTML = "";
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          const fileType = data.url.includes(".mp4") ? "video" : "image";
+          const isOwnPost = data.uid === currentUser.uid;
+
+          const card = document.createElement("div");
+          card.style.background = "#1e1e1e";
+          card.style.padding = "15px";
+          card.style.borderRadius = "10px";
+          card.style.boxShadow = "0 0 10px #ff0057";
+
+          card.innerHTML = `
+            <h3 style="color: #ff0057;">${data.title}</h3>
+            ${fileType === "video" ? `
+              <video src="${data.url}" controls style="width: 100%; border-radius: 5px;"></video>
+            ` : `
+              <img src="${data.url}" alt="${data.title}" style="width: 100%; border-radius: 5px;" />
+            `}
+            <p style="margin: 10px 0;">${data.description || "No description"}</p>
+            <small style="color: #aaa;">Posted by: ${data.user}</small><br/>
+            <button onclick="likePost('${doc.id}')">❤️ Like</button>
+            <span id="likes-${doc.id}" style="margin-left: 10px;">${data.likes || 0} likes</span><br/>
+            ${!isOwnPost ? `<button onclick="followUser('${data.uid}', this)">➕ Follow</button>` : `<span style="color: gray;">(You)</span>`}
+          `;
+
+          contentFeed.appendChild(card);
+        });
+      });
+    }
+
     function likePost(postId) {
       const user = firebase.auth().currentUser;
-      if (!user) {
-        alert("Login required to like posts.");
-        return;
-      }
+      if (!user) return alert("Login required to like posts.");
 
       const docRef = firebase.firestore().collection("uploads").doc(postId);
 
@@ -69,7 +76,6 @@
               likedBy: [...likedBy, user.uid]
             });
 
-            // Update UI instantly
             const likeSpan = document.getElementById("likes-" + postId);
             if (likeSpan) {
               const currentLikes = parseInt(likeSpan.innerText) || 0;
@@ -77,17 +83,29 @@
             }
           }
         }
-      }).catch(err => {
-        console.error("Error liking post:", err);
-      });
+      }).catch(console.error);
     }
 
-    // Anonymous fallback
-    firebase.auth().onAuthStateChanged(user => {
-      if (!user) {
-        firebase.auth().signInAnonymously().catch(console.error);
-      }
-    });
+    function followUser(targetUid, btn) {
+      const currentUser = firebase.auth().currentUser;
+      if (!currentUser || targetUid === currentUser.uid) return;
+
+      const userRef = firebase.firestore().collection("users").doc(currentUser.uid);
+
+      userRef.get().then(doc => {
+        const data = doc.data() || {};
+        const following = data.following || [];
+
+        if (following.includes(targetUid)) {
+          alert("Already following this user.");
+        } else {
+          userRef.set({ following: [...following, targetUid] }, { merge: true }).then(() => {
+            btn.disabled = true;
+            btn.innerText = "✅ Following";
+          });
+        }
+      });
+    }
   </script>
 </body>
 </html>
