@@ -14,6 +14,39 @@
 
   <script src="firebase.js"></script>
   <script>
+  function likePost(postId) {
+    const user = firebase.auth().currentUser;
+    if (!user) {
+      alert("Login required to like posts.");
+      return;
+    }
+
+    const docRef = firebase.firestore().collection("uploads").doc(postId);
+
+    docRef.get().then(doc => {
+      if (doc.exists) {
+        const data = doc.data();
+        const likedBy = data.likedBy || [];
+
+        if (likedBy.includes(user.uid)) {
+          alert("You already liked this post.");
+        } else {
+          docRef.update({
+            likes: (data.likes || 0) + 1,
+            likedBy: [...likedBy, user.uid]
+          });
+        }
+      }
+    });
+  }
+
+  firebase.auth().onAuthStateChanged(user => {
+    if (!user) {
+      firebase.auth().signInAnonymously(); // fallback for guests
+    }
+  });
+</script>
+  <script>
     const contentFeed = document.getElementById('contentFeed');
 
     firebase.firestore().collection("uploads").orderBy("createdAt", "desc").onSnapshot(snapshot => {
