@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Welcome to xXWOLFXx</title>
   <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
 </head>
 <body>
   <video autoplay muted loop id="bgVideo">
@@ -13,10 +14,16 @@
   </video>
 
   <div class="overlay">
-    <h1 class="welcome-text">Welcome to <span>xXWOLFXx</span></h1>
-    <button onclick="enterSite()">Enter</button>
+    <div class="glass-box animate-fade">
+      <h1 class="welcome-text">Welcome to <span>xXWOLFXx</span></h1>
+      <button class="glow-button" onclick="enterSite()">Enter</button>
+    </div>
   </div>
 
-  <script src="script.js"></script>
+  <script>
+    function enterSite() {
+      window.location.href = "login.html"; // Or dashboard.html
+    }
+  </script>
 </body>
 </html>
