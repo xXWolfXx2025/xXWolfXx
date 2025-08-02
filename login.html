@@ -7,18 +7,40 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body class="auth-page">
+
   <div class="form-container">
-    <h2>Login to xXWOLFXx</h2>
-    <input type="email" placeholder="Email" />
-    <input type="password" placeholder="Password" />
-    <button onclick="loginUser()">Login</button>
-    <p class="redirect">Don't have an account? <a href="#">Sign up</a></p>
+    <h2>Login to <span style="color: #ff0057;">xXWOLFXx</span></h2>
+
+    <input type="email" id="email" placeholder="Email" />
+    <input type="password" id="password" placeholder="Password" />
+
+    <button onclick="login()">Login</button>
+    <button onclick="googleLogin()" style="margin-top: 10px; background-color: #4285F4;">Login with Google</button>
+
+    <div class="redirect">
+      Don’t have an account? <a href="signup.html">Create one</a>
+    </div>
   </div>
 
+  <script src="firebase.js"></script>
   <script>
-    function loginUser() {
-      alert("This is a demo. Login feature coming soon.");
-      window.location.href = "explore.html";
+    function login() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      firebase.auth().signInWithEmailAndPassword(email, password)
+        .then(() => {
+          window.location.href = "explore.html";
+        })
+        .catch(error => alert(error.message));
+    }
+
+    function googleLogin() {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      firebase.auth().signInWithPopup(provider)
+        .then(() => {
+          window.location.href = "explore.html";
+        })
+        .catch(error => alert(error.message));
     }
   </script>
 </body>
