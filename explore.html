@@ -29,15 +29,17 @@
         card.style.boxShadow = "0 0 10px #ff0057";
 
         card.innerHTML = `
-          <h3 style="color: #ff0057;">${data.title}</h3>
-          ${fileType === "video" ? `
-            <video src="${data.url}" controls style="width: 100%; border-radius: 5px;"></video>
-          ` : `
-            <img src="${data.url}" alt="${data.title}" style="width: 100%; border-radius: 5px;" />
-          `}
-          <p style="margin: 10px 0;">${data.description || "No description"}</p>
-          <small style="color: #aaa;">Posted by: ${data.user}</small>
-        `;
+  <h3 style="color: #ff0057;">${data.title}</h3>
+  ${fileType === "video" ? `
+    <video src="${data.url}" controls style="width: 100%; border-radius: 5px;"></video>
+  ` : `
+    <img src="${data.url}" alt="${data.title}" style="width: 100%; border-radius: 5px;" />
+  `}
+  <p style="margin: 10px 0;">${data.description || "No description"}</p>
+  <small style="color: #aaa;">Posted by: ${data.user}</small>
+  <br/><br/>
+  <button onclick="likePost('${doc.id}')" style="margin-top: 10px;">❤️ Like (${data.likes || 0})</button>
+`;
 
         contentFeed.appendChild(card);
       });
