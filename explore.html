@@ -6,17 +6,42 @@
   <title>Explore - xXWOLFXx</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-<body>
-  <header>
-    <h1>Explore xXWOLFXx</h1>
-    <nav>
-      <a href="upload.html">Upload</a>
-      <a href="logout.html">Logout</a>
-    </nav>
-  </header>
+<body style="padding: 20px;">
 
-  <main>
-    <p>Here's where your creative world comes alive... (This is static for now)</p>
-  </main>
+  <h1>🔥 Explore <span style="color: #ff0057;">xXWOLFXx</span> Creations</h1>
+
+  <div id="contentFeed" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;"></div>
+
+  <script src="firebase.js"></script>
+  <script>
+    const contentFeed = document.getElementById('contentFeed');
+
+    firebase.firestore().collection("uploads").orderBy("createdAt", "desc").onSnapshot(snapshot => {
+      contentFeed.innerHTML = "";
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        const fileType = data.url.includes(".mp4") ? "video" : "image";
+
+        const card = document.createElement("div");
+        card.style.background = "#1e1e1e";
+        card.style.padding = "15px";
+        card.style.borderRadius = "10px";
+        card.style.boxShadow = "0 0 10px #ff0057";
+
+        card.innerHTML = `
+          <h3 style="color: #ff0057;">${data.title}</h3>
+          ${fileType === "video" ? `
+            <video src="${data.url}" controls style="width: 100%; border-radius: 5px;"></video>
+          ` : `
+            <img src="${data.url}" alt="${data.title}" style="width: 100%; border-radius: 5px;" />
+          `}
+          <p style="margin: 10px 0;">${data.description || "No description"}</p>
+          <small style="color: #aaa;">Posted by: ${data.user}</small>
+        `;
+
+        contentFeed.appendChild(card);
+      });
+    });
+  </script>
 </body>
 </html>
