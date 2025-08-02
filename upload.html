@@ -7,12 +7,52 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body class="upload-page">
-  <h2>Upload Your Art</h2>
-  <form>
-    <input type="text" placeholder="Title" required />
-    <textarea placeholder="Description"></textarea>
-    <input type="file" />
-    <button type="submit" onclick="event.preventDefault(); alert('Demo upload complete');">Upload</button>
-  </form>
+
+  <div class="form-container">
+    <h2>Upload to <span style="color: #ff0057;">xXWOLFXx</span></h2>
+
+    <input type="text" id="title" placeholder="Enter title" required />
+    <input type="file" id="fileInput" accept="image/*,video/*,application/pdf" />
+    <textarea id="description" placeholder="Write a short description (optional)" rows="4"></textarea>
+
+    <button onclick="uploadContent()">Upload</button>
+
+    <div class="redirect">
+      <a href="explore.html">Back to Explore</a>
+    </div>
+  </div>
+
+  <script src="firebase.js"></script>
+  <script>
+    function uploadContent() {
+      const title = document.getElementById('title').value;
+      const file = document.getElementById('fileInput').files[0];
+      const description = document.getElementById('description').value;
+
+      if (!title || !file) return alert("Title and file are required!");
+
+      const storageRef = firebase.storage().ref('uploads/' + file.name);
+      const uploadTask = storageRef.put(file);
+
+      uploadTask.on('state_changed',
+        (snapshot) => {}, 
+        (error) => alert("Upload failed: " + error.message),
+        () => {
+          uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
+            firebase.firestore().collection("uploads").add({
+              title: title,
+              description: description,
+              url: downloadURL,
+              createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+              user: firebase.auth().currentUser.uid
+            }).then(() => {
+              alert("Upload successful!");
+              window.location.href = "explore.html";
+            });
+          });
+        }
+      );
+    }
+  </script>
 </body>
 </html>
