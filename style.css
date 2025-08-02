@@ -1,3 +1,4 @@
+/* === Global Reset and Defaults === */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -9,13 +10,17 @@ body {
   background-color: #121212;
   color: white;
   padding: 20px;
+  overflow-x: hidden;
 }
 
+/* === Headings === */
 h1, h2 {
   text-align: center;
   margin-bottom: 20px;
+  text-shadow: 0 0 10px #ff0057;
 }
 
+/* === Auth & Upload Pages Layout === */
 .auth-page, .upload-page {
   display: flex;
   flex-direction: column;
@@ -24,6 +29,7 @@ h1, h2 {
   height: 100vh;
 }
 
+/* === Form Container === */
 .form-container {
   background-color: #1e1e1e;
   padding: 30px;
@@ -33,14 +39,18 @@ h1, h2 {
   max-width: 400px;
 }
 
+/* === Inputs === */
 input, textarea {
   width: 100%;
   padding: 10px;
   margin: 10px 0;
   border: none;
   border-radius: 5px;
+  background-color: #2a2a2a;
+  color: white;
 }
 
+/* === Buttons === */
 button {
   padding: 12px 24px;
   background: #ff0057;
@@ -48,12 +58,16 @@ button {
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.2s;
 }
 
 button:hover {
   background-color: #e6004c;
+  transform: scale(1.03);
 }
 
+/* === Nav Links === */
 nav {
   text-align: center;
   margin-top: 10px;
@@ -63,9 +77,81 @@ nav a {
   color: #ff0057;
   margin: 0 10px;
   text-decoration: none;
+  transition: color 0.3s;
 }
 
+nav a:hover {
+  color: #ffffff;
+}
+
+/* === Redirect Text === */
 .redirect {
   margin-top: 10px;
   font-size: 0.9em;
+  color: #ccc;
+}
+
+/* === VIDEO BACKGROUND === */
+#bgVideo {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  z-index: -2;
+}
+
+/* === Overlay for Landing Page === */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* === Welcome Heading === */
+.welcome-text {
+  font-size: 3em;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 30px;
+  text-shadow: 0 0 20px #ff0057;
+  animation: flicker 2s infinite;
+}
+
+.welcome-text span {
+  color: #00f7ff;
+  text-shadow: 0 0 15px #00f7ff, 0 0 30px #00f7ff;
+}
+
+/* === Enter Button === */
+.overlay button {
+  padding: 14px 28px;
+  font-size: 1.2em;
+  background: linear-gradient(90deg, #ff0057, #00f7ff);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 0 10px #00f7ff, 0 0 20px #ff0057;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.overlay button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px #00f7ff, 0 0 40px #ff0057;
+}
+
+/* === Flicker Animation === */
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.85; }
 }
