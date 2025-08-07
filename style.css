@@ -111,3 +111,35 @@ footer {
 .flicker {
   animation: flicker 1.5s infinite;
 }
+
+nav {
+  background-color: #0d0d0d;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #222;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.nav-left a {
+  font-size: 1.2rem;
+  color: #00ffff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.nav-right a {
+  margin-left: 1.5rem;
+  color: #ccc;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+.nav-right a:hover {
+  color: #00ffff;
+  text-shadow: 0 0 5px #00ffff;
+}
